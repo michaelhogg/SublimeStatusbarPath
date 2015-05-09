@@ -21,11 +21,11 @@ class CurrentPathStatusCommand(sublime_plugin.EventListener):
             modifiedTimestamp = os.path.getmtime(filename)
 
             modified = datetime.datetime.utcfromtimestamp(modifiedTimestamp).strftime(formatDate + ' @ ' + formatTime)
-            modified = string.replace(modified, ' 0', ' ')  # Trim leading zeros from days and hours
             modified = string.replace(modified, ' AM', ' am')
             modified = string.replace(modified, ' PM', ' pm')
             modified = string.replace(modified, today, 'Today')
             modified = string.replace(modified, yesterday, 'Yesterday')
+            modified = string.replace(modified, ' 0', ' ')  # Trim leading zeros from days and hours
 
             if 'HOME' in os.environ:
                     filename = filename.replace(os.environ['HOME'], '~', 1)
