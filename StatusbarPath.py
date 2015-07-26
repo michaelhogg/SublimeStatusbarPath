@@ -2,6 +2,7 @@ import datetime
 import os
 import pytz
 import string
+import time
 
 import sublime
 import sublime_plugin
@@ -23,12 +24,13 @@ class CurrentPathStatusCommand(sublime_plugin.EventListener):
             formatDate = '%a %d %b %Y'
             formatTime = '%I:%M:%S %p'
 
-            today     = datetime.datetime.today().strftime(formatDate)
-            yesterday = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime(formatDate)
+            today     = (self.unixTimestampToLocalDatetime(time.time())                             ).strftime(formatDate)
+            yesterday = (self.unixTimestampToLocalDatetime(time.time()) - datetime.timedelta(days=1)).strftime(formatDate)
 
-            modifiedTimestamp = os.path.getmtime(filename)
+            unixTimestamp = os.path.getmtime(filename)
+            dtLocal       = self.unixTimestampToLocalDatetime(unixTimestamp)
 
-            modified = datetime.datetime.utcfromtimestamp(modifiedTimestamp).strftime(formatDate + ' @ ' + formatTime)
+            modified = dtLocal.strftime(formatDate + ' @ ' + formatTime)
             modified = string.replace(modified, ' AM', ' am')
             modified = string.replace(modified, ' PM', ' pm')
             modified = string.replace(modified, today, 'Today')
