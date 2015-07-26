@@ -1,5 +1,6 @@
 import datetime
 import os
+import pytz
 import string
 
 import sublime
@@ -7,6 +8,13 @@ import sublime_plugin
 
 
 class CurrentPathStatusCommand(sublime_plugin.EventListener):
+
+    def unixTimestampToLocalDatetime(self, unixTimestamp):
+        # stackoverflow.com/questions/12978391/localizing-epoch-time-with-pytz-in-python/#13260035
+        dtUTC   = datetime.datetime.utcfromtimestamp(unixTimestamp)  # UTC,   eg: 2015-07-26 09:39:11       (no tzinfo is stored)
+        dtUTC   = dtUTC.replace(tzinfo=pytz.utc)                     # UTC,   eg: 2015-07-26 09:39:11+00:00 (tzinfo is set to UTC)
+        dtLocal = dtUTC.astimezone(pytz.timezone('Europe/London'))   # Local, eg: 2015-07-26 10:39:11+01:00
+        return dtLocal
 
     def on_activated(self, view):
         filename = view.file_name()
